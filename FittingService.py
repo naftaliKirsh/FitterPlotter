@@ -19,6 +19,7 @@ class FittingService:
             self.threadList = []
 
     def addMeasurement(self, independents, freq, tData):
+        """TODO doc"""
         if not len(independents)==len(self.independents):
             raise Exception("The number of independents is incorrect, it should be %d" % len(self.independents))
         if self.fitAsync:
