@@ -19,7 +19,7 @@ numPoints = 5000
 
 freq = np.linspace(f0Center-band, f0Center+band, numPoints)
 
-fittingService = fs.FittingService(mfw.MatlabFitterWrapper(False,False), (("Power","dBm"),("Bias","mA")), True)
+# fittingService = fs.FittingService(mfw.MatlabFitterWrapper(False,False), (("Power","dBm"),("Bias","mA")), True)
 resonatorDataPlotter = rdp.ResonatorDataPlotter()
 multiDataPlotter = mdp.MultiDataPlotter(resonatorDataPlotter,plt,("Transmission",""),(("Power","dBm"),("Bias","mA")),("Frequency","MHz"))
 
@@ -28,9 +28,9 @@ multiDataPlotter.addMainXdata(freq/1e6)
 for idx,power in enumerate(pwrs):
     for idx2,bias in enumerate(biases):
         tData = rutils.evalS21model(freq, [Qs[idx], f0s[idx2], 0, 0, 0, 1, 1, 0, 0.5, 0])
-        fittingService.addMeasurement((power,bias), freq, tData)
+        # fittingService.addMeasurement((power,bias), freq, tData)
         multiDataPlotter.addData((power,bias),tData)
-
+#TODO: test get_data_2d
 fittingService.joinAllThreads()
 print(fittingService.fitsTable)
 print("----------")
