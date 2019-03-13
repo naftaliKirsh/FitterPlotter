@@ -11,10 +11,10 @@ numBiases = 5
 numPwrs = 5
 f0Center = 6e3*1e6
 f0s = f0Center+np.linspace(-10e3,10e3,numBiases) #Hz
-Qs = 1e5*np.linspace(0.5, 1.5, numPwrs)
+Qs = 1e5*np.linspace(0.1, 1.5, numPwrs) #10**np.linspace(2,5,numBiases)#
 pwrs = np.linspace(0.5, 1.5, numPwrs)
 biases  = np.linspace(-1,1,numBiases)
-band = 0.4e6 #Hz
+band = 0.05e6 #Hz
 numPoints = 5000
 
 freq = np.linspace(f0Center-band, f0Center+band, numPoints)
@@ -43,13 +43,26 @@ for idx,power in enumerate(pwrs):
 # plt.plot(pwrsList,QList,'*')
 # plt.show()
 
-for power in pwrsList:
+for bias in biases:
     figure = plt.figure()
-    d = multiDataPlotter.get_data_2d((power,),"Bias")
-    for bias in biasList:
+    for power in pwrs:
         multiDataPlotter.plotSingleData((power,bias),figure)
     plt.legend()
     plt.show()
+
+for power in pwrs:
+    figure = plt.figure()
+    multiDataPlotter.plot_2d_data((power,), "Bias",figure)
+    plt.title("Power = %f [dBm]" % power)
+    plt.show()
+    
+
+for bias in biases:
+    figure = plt.figure()
+    multiDataPlotter.plot_2d_data((bias,), "Power",figure)
+    plt.title("Bias = %f [mA]" % bias)
+    plt.show()
+    
     
 
 

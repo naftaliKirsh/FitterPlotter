@@ -1,4 +1,5 @@
 import string
+import numpy as np
 
 class MultiDataPlotter:
     #TODO:
@@ -41,15 +42,17 @@ class MultiDataPlotter:
             raise Exception("getData1d: The number of independents is incorrect, it should be %d" % len(self.independents_list))
         return self.data_table[independents]
     
-    def get_data_2d(self, constrained_independents, free_independent):
+    def get_data_2d(self, constrained_independents, free_param_idx):
         """
-        Get the data constratining all independents but free_independent to the given value of constrained_independents (xData is unconstrained and is the x axis) 
-        returns the data and corresponding free independent value in a dict
+        Get the data constratining all independents but the independent with index free_param_idx to the given value of constrained_independents 
+        (xData is unconstrained and is the x axis) 
+        returns the data and corresponding free independent value in a dict 
         """
         if not len(constrained_independents)==len(self.independents_list)-1:
             raise Exception("get_data_2d: The number of independents is incorrect, it should be %d" % len(self.independents_list)-1)
-        free_idx = (zip(*self.independents_list)[0]).index(free_independent) #get index of free independent
-        data2d = {k[free_idx]:v for k,v in self.data_table.iteritems() if (k[:free_idx]+k[free_idx+1:])==constrained_independents}
+        
+        #create new dict with the free param values as key for ietms satisfing the constrains 
+        data2d = {k[free_param_idx]:v for k,v in self.data_table.iteritems() if (k[:free_param_idx]+k[free_param_idx+1:])==constrained_independents}
         return data2d
 
     def plotSingleData(self, independents, figure=None):
@@ -67,7 +70,7 @@ class MultiDataPlotter:
 
         return figure
     
-    def plot2dData(self, independents, figure=None):
+    def plot_2d_data(self, constrained_independents, free_independent, figure=None):
         """Plots data with given contstrains on all independents but one at given figure (or a new one if figure is None).
         xData is unconstrained and is the x axis, the y axis is the other unconstrained data 
         Returns figure"""
@@ -75,9 +78,21 @@ class MultiDataPlotter:
             figure = self.plt.figure()
         else:
             self.plt.figure(figure.number)
-        
-        data = self.get_data_2d(independents)
-        labelStringList = ["%s=%s [%s]" % (self.independents_list[i][0],str(independents[i]),self.independents_list[i][1]) for i in range(len(independents))]
-        self.dataPlotter.plotData(self.plt, figure, self.mainX, self.xData, self.dataName, data, string.join(labelStringList,sep=", "))
 
+        free_param_idx = (zip(*self.independents_list)[0]).index(free_independent) #get index of free independent
+        
+        data_dict = self.get_data_2d(constrained_independents, free_param_idx)
+
+        #sort the free param and data_list accordingly
+        y_axis = data_dict.keys()
+        data_list = data_dict.values()
+        sorted_idxes = np.argsort(y_axis)
+        y_axis = np.array(y_axis)[sorted_idxes]
+        data_list = np.array(data_list)[sorted_idxes]
+        #create data matrix
+        data_matrix = np.matrix(data_list)
+
+        self.dataPlotter.plot_data_2d(self.plt, figure, self.mainX, self.xData, self.independents_list[free_param_idx], 
+            y_axis, self.dataName, data_matrix)
+        
         return figure
