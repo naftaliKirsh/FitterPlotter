@@ -31,12 +31,12 @@ for idx,power in enumerate(pwrs):
         # fittingService.addMeasurement((power,bias), freq, tData)
         multiDataPlotter.addData((power,bias),tData)
 #TODO: test get_data_2d
-fittingService.joinAllThreads()
-print(fittingService.fitsTable)
-print("----------")
-# TODO - savable version : cPickle/json
-pwrsList = set([x[0] for x in fittingService.fitsTable.keys()])
-biasList = set([x[1] for x in fittingService.fitsTable.keys()])
+# fittingService.joinAllThreads()
+# print(fittingService.fitsTable)
+# print("----------")
+# # TODO - savable version : cPickle/json
+# pwrsList = set([x[0] for x in fittingService.fitsTable.keys()])
+# biasList = set([x[1] for x in fittingService.fitsTable.keys()])
 # QList = [x["Q"] for x in fittingService.fitsTable.values()]
 
 # plt.figure()
@@ -45,6 +45,7 @@ biasList = set([x[1] for x in fittingService.fitsTable.keys()])
 
 for power in pwrsList:
     figure = plt.figure()
+    d = multiDataPlotter.get_data_2d((power,),"Bias")
     for bias in biasList:
         multiDataPlotter.plotSingleData((power,bias),figure)
     plt.legend()
