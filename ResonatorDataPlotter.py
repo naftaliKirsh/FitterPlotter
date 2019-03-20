@@ -2,7 +2,7 @@
 import numpy as np
 
 class ResonatorDataPlotter:
-    def plotData(self, plt, figure, fDataName, fData, _, tData, label=None):
+    def plotData(self, plt, figure, fDataName, fData, _, tData, label=None, title = None):
         """figure - figure to plot in
         fData - frequency data 
         tData - complex transmission data"""
@@ -16,7 +16,8 @@ class ResonatorDataPlotter:
         plt.plot(np.real(tData), np.imag(tData), label=label)
         plt.xlabel("Re(t)")
         plt.ylabel("Im(t)")
-    
+        if title is not None:
+            figure.suptitle(title)
 
     def plot_data_2d(self, plt, figure, f_data_name, f_data, y_data_name, y_data, _, t_matrix):
         """figure - figure to plot in

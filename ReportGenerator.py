@@ -19,6 +19,15 @@ class ReportGenerator:
         
         self.canvas.save()
 
-    def add_rawdata_plot(self, )
+    def add_multiple_1d_rawdata_plots(self, constrained_independents, repeating_independent):
+        """Adds multiple 1d plots in a single figure
+        Args:
+            
+        """
+
+        data_2d = self.data_plotter.get_data_2d(constrained_independents, repeating_independent)
+
+
+
 
     

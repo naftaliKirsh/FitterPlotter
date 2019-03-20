@@ -44,11 +44,11 @@ for idx,power in enumerate(pwrs):
 # plt.show()
 
 for bias in biases:
-    figure = plt.figure()
-    for power in pwrs:
-        multiDataPlotter.plotSingleData((power,bias),figure)
-    plt.legend()
+#     for power in pwrs:
+#         multiDataPlotter.plotSingleData((power,bias),figure)
+    multiDataPlotter.plot_multiple_1d_data((bias,),"Power")
     plt.show()
+
 
 for power in pwrs:
     figure = plt.figure()

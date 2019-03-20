@@ -45,15 +45,19 @@ class MultiDataPlotter:
     def get_data_2d(self, constrained_independents, free_param_idx):
         """
         Get the data constratining all independents but the independent with index free_param_idx to the given value of constrained_independents 
-        (xData is unconstrained and is the x axis) 
+        (xData is unconstrained and is the x axis). 
         returns the data and corresponding free independent value in a dict 
         """
         if not len(constrained_independents)==len(self.independents_list)-1:
             raise Exception("get_data_2d: The number of independents is incorrect, it should be %d" % len(self.independents_list)-1)
         
+        # if type(free_param_idx)==str:
+        #     free_param_idx = (zip(*self.independents_list)[0]).index(free_param_idx) #get index of free independent
+        
         #create new dict with the free param values as key for ietms satisfing the constrains 
         data2d = {k[free_param_idx]:v for k,v in self.data_table.iteritems() if (k[:free_param_idx]+k[free_param_idx+1:])==constrained_independents}
         return data2d
+        
 
     def plotSingleData(self, independents, figure=None):
         """Plots data with given independents at given figure (or a new one if figure is None).
@@ -69,6 +73,44 @@ class MultiDataPlotter:
         self.dataPlotter.plotData(self.plt, figure, self.mainX, self.xData, self.dataName, data, string.join(labelStringList,sep=", "))
 
         return figure
+    
+    def plot_multiple_1d_data(self, constrained_independents, repeating_independent, figure=None):
+        """Plots multiple 1d plots on the same figure.
+        
+        Args:
+            constrained_independents: A tuple of values for the independents which are constrained (constant) for the data in the figure.
+            repeating_independent: A string - the name of the indpendent which changes between different plots in the figure.
+
+        Returns:
+            A figure with the plots
+        """
+
+        if figure is None:
+            figure = self.plt.figure()
+        else:
+            self.plt.figure(figure.number)
+
+        repeating_param_idx = (zip(*self.independents_list)[0]).index(repeating_independent) #get index of free independent
+        
+        data_dict = self.get_data_2d(constrained_independents, repeating_param_idx)
+
+        constrained_independents_idxes = range(repeating_param_idx)+range(repeating_param_idx+1,len(self.independents_list))
+        title_str_list = ["%s=%s [%s]" % (self.independents_list[constrained_independents_idxes[i]][0],
+            str(constrained_independents[i]),self.independents_list[constrained_independents_idxes[i]][1]) 
+            for i in range(len(constrained_independents_idxes))]
+
+        for param,data in data_dict.iteritems():
+            label = "%s=%s [%s]" % (self.independents_list[repeating_param_idx][0],str(param),self.independents_list[repeating_param_idx][1])
+            self.dataPlotter.plotData(self.plt, figure, self.mainX, self.xData, self.dataName, data, label, string.join(title_str_list,sep=", ")) 
+        
+        self.plt.legend()
+
+        return figure
+        
+        
+        
+
+
     
     def plot_2d_data(self, constrained_independents, free_independent, figure=None):
         """Plots data with given contstrains on all independents but one at given figure (or a new one if figure is None).
