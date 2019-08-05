@@ -6,7 +6,7 @@ class MatlabFitterWrapper:
     def __init__(self, peakResonance, getTrailResonanceFromAbsData):
         self.peakResonance = peakResonance
         self.getTrailResonanceFromAbsData = getTrailResonanceFromAbsData
-        print "Initializing Matlab..."
+        print("Initializing Matlab...")
         self.matlabEngine = matlab.engine.start_matlab()
 
     def fit(self, freq, tData):
